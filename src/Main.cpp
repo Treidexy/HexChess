@@ -3,6 +3,8 @@
 
 #include "HexChess/HexChess.h"
 
+#include <bitset>
+
 using namespace HexChess;
 
 static constexpr const float tile_width = 60.0f;
@@ -27,12 +29,21 @@ struct Game: public olc::PixelGameEngine {
 
 	Game() {
 		sAppName = "Hex Chess";
+
+		std::bitset<BoardLen> bb;
+		for (int x = 0; x < FileCount; x++) {
+			for (int y = 0; y < RankCounts[x]; y++) {
+				bb.set(SquareAt(x, y), true);
+			}
+		}
+
+		std::cout << bb << '\n';
 	}
 
 	bool OnUserCreate() override {
 		InitEyes();
 		position = Position::Default();
-		sel_square = 0;
+		sel_square = 69;
 
 		tile_decals[0] = new olc::Decal(new olc::Sprite("res/tile0.png"));
 		tile_decals[1] = new olc::Decal(new olc::Sprite("res/tile1.png"));
@@ -60,21 +71,28 @@ struct Game: public olc::PixelGameEngine {
 
 	bool OnUserUpdate(float fElapsedTime) override {
 		Clear(olc::PixelF(0.25f, 0.25f, 0.25f));
+
+		int file = int(GetMouseX() / (0.75f * tile_width) + 0.0625f);
+		if (file < 0) {
+			file = 0;
+		} else if (file >= FileCount) {
+			file = FileCount - 1;
+		}
+
+		int rank = RankCounts[file] - 1 - int(GetMouseY() / tile_height - tile_yoffs[file]);
+		if (rank < 0) {
+			rank = 0;
+		} else if (rank >= RankCounts[file]) {
+			rank = RankCounts[file] - 1;
+		}
+
+		sel_square = SquareAt(file, rank);
 		
 		for (int x = 0; x < FileCount; x++) {
 			for (int y = 0; y < RankCounts[x]; y++) {
 				int draw_y = RankCounts[x] - y - 1;
 
-				olc::Decal* decal;
-				int square = SquareAt(x, y);
-				if (square == sel_square) {
-					decal = sel_tile_decal;
-				} else if (knight_eyes[square] & BitBoard(square)) {
-					decal = stat_tile_decal;
-				} else {
-					decal = tile_decals[(tile_colors[x] + draw_y) % 3];
-				}
-				DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y) * tile_height}, decal);
+				DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y)* tile_height}, tile_decals[(tile_colors[x] + draw_y) % 3]);
 			}
 		}
 
@@ -82,8 +100,17 @@ struct Game: public olc::PixelGameEngine {
 			for (int y = 0; y < RankCounts[x]; y++) {
 				int draw_y = RankCounts[x] - y - 1;
 				Piece piece = position.pieces[SquareAt(x, y)];
+				int square = SquareAt(x, y);
+
 				if (piece != Piece::None) {
 					DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y) * tile_height}, piece_decals[(int) piece]);
+				}
+
+				if (knight_eyes[sel_square][square]) {
+					DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y)* tile_height}, stat_tile_decal);
+				}
+				if (square == sel_square) {
+					DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y)* tile_height}, sel_tile_decal);
 				}
 			}
 		}

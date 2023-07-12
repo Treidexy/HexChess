@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClInclude Include="inc\HexChess\BitBoard.h" />
     <ClInclude Include="inc\HexChess\Board.h" />
+    <ClInclude Include="inc\HexChess\Directions.h" />
     <ClInclude Include="inc\HexChess\HexChess.h" />
     <ClInclude Include="inc\HexChess\Moves.h" />
     <ClInclude Include="inc\olcPixelGameEngine.h" />
@@ -148,6 +149,8 @@
     <Image Include="res\b_pawn.png" />
     <Image Include="res\b_queen.png" />
     <Image Include="res\b_rook.png" />
+    <Image Include="res\sel_tile.png" />
+    <Image Include="res\stat_tile.png" />
     <Image Include="res\tile0.png" />
     <Image Include="res\tile1.png" />
     <Image Include="res\tile2.png" />

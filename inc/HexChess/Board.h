@@ -1,8 +1,10 @@
 #pragma once
 
 #include <cassert>
+#include <bitset>
 
 namespace HexChess {
+	//static constexpr const int MiddleFile = 5;
 	static constexpr const int FileCount = 11;
 
 	static constexpr const int RankMinCount = 6;
@@ -12,6 +14,7 @@ namespace HexChess {
 	};
 
 	static constexpr const int BoardLen = FileCount * RankMaxCount;
+
 
 
 	static constexpr const int LatNorth = 0;
@@ -28,6 +31,7 @@ namespace HexChess {
 	static constexpr const int DiagWest = 10;
 	static constexpr const int DiagNorthWest = 11;
 
+	static constexpr const int DirectionHalfCount = 6;
 	static constexpr const int DirectionCount = 12;
 
 	enum class Piece {
@@ -61,9 +65,26 @@ namespace HexChess {
 		return file >= 0 && file < FileCount && rank >= 0 && rank < RankCounts[file];
 	}
 
+	inline constexpr int FileOf(int square) {
+		return square / RankMaxCount;
+	}
+
+	inline constexpr int RankOf(int square) {
+		return square % RankMaxCount;
+	}
+
 	inline constexpr int SquareAt(int file, int rank) {
 		assert(InBounds(file, rank));
 
-		return file * FileCount + rank;
+		return file * RankMaxCount + rank;
+	}
+
+	inline constexpr bool MaybeSquareAt(int file, int rank, int* out_square) {
+		*out_square = file * RankMaxCount + rank;
+		return InBounds(file, rank);
+	}
+	
+	inline int positive_modulo(int i, int n) {
+		return (i % n + n) % n;
 	}
 }

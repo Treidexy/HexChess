@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "HexChess/Directions.h"
+
 using namespace HexChess;
 
 BitBoard HexChess::king_eyes[BoardLen];
@@ -12,29 +14,34 @@ BitBoard HexChess::pawn_eyes[BoardLen];
 BitBoard HexChess::ray_eyes[BoardLen][DirectionCount];
 
 namespace {
-	BitBoard BitIfInBounds(int x, int y) {
-		if (InBounds(x, y)) {
-			return BitBoard(SquareAt(x, y));
-		} else {
-			return BitBoard();
+	BitBoard KingEyes(int x, int y) {
+		BitBoard bb = BitBoard();
+		int eye_square;
+
+		for (int i = 0; i < DirectionCount; i++) {
+			if (SquareInDir(i, x, y, &eye_square)) {
+				bb.set(eye_square);
+			}
 		}
+
+		return bb;
 	}
 
 	BitBoard KnightEyes(int x, int y) {
 		BitBoard bb = BitBoard();
+		int eye_square;
 
-		bb |= BitIfInBounds(x - 1, y + 2);
-		bb |= BitIfInBounds(x + 1, y + 2);
-		bb |= BitIfInBounds(x + 2, y + 1);
-		bb |= BitIfInBounds(x + 3, y - 1);
-		bb |= BitIfInBounds(x + 3, y - 2);
-		bb |= BitIfInBounds(x + 2, y - 3);
-		bb |= BitIfInBounds(x + 1, y - 3);
-		bb |= BitIfInBounds(x - 1, y - 3);
-		bb |= BitIfInBounds(x - 2, y - 3);
-		bb |= BitIfInBounds(x - 3, y - 2);
-		bb |= BitIfInBounds(x - 3, y - 1);
-		bb |= BitIfInBounds(x - 2, y + 1);
+		for (int i = 0; i < DirectionHalfCount; i++) {
+			if (SquareInDir(i, x, y, &eye_square) && SquareInDir(i, FileOf(eye_square), RankOf(eye_square), &eye_square)) {
+				int p = eye_square;
+				if (SquareInDir(positive_modulo(i - 1, DirectionHalfCount), FileOf(p), RankOf(p), &eye_square)) {
+					bb.set(eye_square);
+				}
+				if (SquareInDir((i + 1) % DirectionHalfCount, FileOf(p), RankOf(p), &eye_square)) {
+					bb.set(eye_square);
+				}
+			}
+		}
 
 		return bb;
 	}
@@ -43,9 +50,9 @@ namespace {
 void HexChess::InitEyes() {
 	for (int x = 0; x < FileCount; x++) {
 		for (int y = 0; y < RankCounts[x]; y++) {
-			knight_eyes[SquareAt(x, y)] = KnightEyes(x, y);
+			int square = SquareAt(x, y);
+			king_eyes[square] = KingEyes(x, y);
+			knight_eyes[square] = KnightEyes(x, y);
 		}
 	}
-
-	std::cout << knight_eyes[0].high << knight_eyes[0].low << "\n";
 }
