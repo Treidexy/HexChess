@@ -1,10 +1,12 @@
 #include "HexChess/Position.h"
 
+#include <iostream>
+
 using namespace HexChess;
 
 namespace {
 	void SetPiece(Position* position, File file, Rank rank, Piece piece, Color color) {
-		int square = SquareAt(file, rank);
+		Square square = SquareAt(file, rank);
 		position->pieces[square] = piece;
 		position->colorbb[color].set(square);
 		position->checkersbb.set(square);
@@ -56,7 +58,6 @@ Position Position::Default() {
 	SetPiece(&p, 6, 9, King, Black);
 	SetPiece(&p, 7, 8, Knight, Black);
 	SetPiece(&p, 8, 7, Rook, Black);
-
 
 	return position;
 }

@@ -29,15 +29,6 @@ struct Game: public olc::PixelGameEngine {
 
 	Game() {
 		sAppName = "Hex Chess";
-
-		std::bitset<BoardLen> bb;
-		for (int x = 0; x < FileCount; x++) {
-			for (int y = 0; y < RankCounts[x]; y++) {
-				bb.set(SquareAt(x, y), true);
-			}
-		}
-
-		std::cout << bb << '\n';
 	}
 
 	bool OnUserCreate() override {
@@ -71,14 +62,14 @@ struct Game: public olc::PixelGameEngine {
 	bool OnUserUpdate(float fElapsedTime) override {
 		Clear(olc::PixelF(0.25f, 0.25f, 0.25f));
 
-		int file = int(GetMouseX() / (0.75f * tile_width) - 0.25f * 0.75f);
+		File file = int(GetMouseX() / (0.75f * tile_width) - 0.25f * 0.75f);
 		if (file < 0) {
 			file = 0;
 		} else if (file >= FileCount) {
 			file = FileCount - 1;
 		}
 
-		int rank = RankCounts[file] - 1 - int(GetMouseY() / tile_height - tile_yoffs[file]);
+		Rank rank = RankCounts[file] - 1 - int(GetMouseY() / tile_height - tile_yoffs[file]);
 		if (rank < 0) {
 			rank = 0;
 		} else if (rank >= RankCounts[file]) {
@@ -88,19 +79,19 @@ struct Game: public olc::PixelGameEngine {
 		sel_square = SquareAt(file, rank);
 		MoveOptions move_options = position.PieceMoves(sel_square);
 		
-		for (int x = 0; x < FileCount; x++) {
-			for (int y = 0; y < RankCounts[x]; y++) {
-				int draw_y = RankCounts[x] - y - 1;
+		for (File x = 0; x < FileCount; x++) {
+			for (Rank y = 0; y < RankCounts[x]; y++) {
+				Rank draw_y = RankCounts[x] - y - 1;
 
 				DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y) * tile_height}, tile_decals[(tile_colors[x] + draw_y) % 3]);
 			}
 		}
 
-		for (int x = 0; x < FileCount; x++) {
-			for (int y = 0; y < RankCounts[x]; y++) {
-				int draw_y = RankCounts[x] - y - 1;
-				int piece = position.pieces[SquareAt(x, y)];
-				int square = SquareAt(x, y);
+		for (File x = 0; x < FileCount; x++) {
+			for (Rank y = 0; y < RankCounts[x]; y++) {
+				Rank draw_y = RankCounts[x] - y - 1;
+				Piece piece = position.pieces[SquareAt(x, y)];
+				Square square = SquareAt(x, y);
 
 				if (piece != None) {
 					DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y) * tile_height}, piece_decals[PieceCount * int(position.colorbb[Black][square]) + int(piece)]);

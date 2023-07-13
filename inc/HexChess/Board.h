@@ -11,6 +11,7 @@ namespace HexChess {
 	using Color = int;
 	using Piece = int;
 
+
 	//static constexpr const int MiddleFile = 5;
 	static constexpr const int FileCount = 11;
 
@@ -21,6 +22,9 @@ namespace HexChess {
 	};
 
 	static constexpr const int BoardLen = FileCount * RankMaxCount;
+
+	using BitBoard = std::bitset<BoardLen>;
+	static const BitBoard UsableBoard {"0000011111100001111111000111111110011111111101111111111111111111110111111111100111111111000111111110000111111100000111111"};
 
 
 
@@ -46,6 +50,11 @@ namespace HexChess {
 	static constexpr const Color Black = 1;
 	static constexpr const int ColorCount = 2;
 
+	static const BitBoard PawnBoosts[ColorCount] {
+		BitBoard("0000000000000000000001000000000100000000010000000001000000000100000000000100000000000100000000000100000000000100000000000"),
+		BitBoard("0000000000000001000000000010000000000100000000001000000000010000000000100000000001000000000010000000000100000000000000000"),
+	};
+
 	// None is included
 	static constexpr const Piece None = 0;
 	static constexpr const Piece King = 1;
@@ -56,7 +65,7 @@ namespace HexChess {
 	static constexpr const Piece Pawn = 6;
 	static constexpr const int PieceCount = 7;
 
-	inline constexpr bool InBounds(int file, int rank) {
+	inline constexpr bool InBounds(File file, Rank rank) {
 		return file >= 0 && file < FileCount && rank >= 0 && rank < RankCounts[file];
 	}
 

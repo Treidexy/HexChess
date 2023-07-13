@@ -1,7 +1,6 @@
 #pragma once
 
 #include "HexChess/Board.h"
-#include "HexChess/BitBoard.h"
 
 namespace HexChess {
 	struct MoveOptions {
