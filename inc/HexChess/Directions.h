@@ -88,7 +88,7 @@ namespace HexChess {
 		}
 	}
 
-	inline constexpr bool SquareInDir(int dir, File file, Rank rank, Square* out_square) {
+	inline constexpr bool SquareInDir(Direction dir, File file, Rank rank, Square* out_square) {
 		switch (dir) {
 		case 0: return SquareInDir<0>(file, rank, out_square);
 		case 1: return SquareInDir<1>(file, rank, out_square);

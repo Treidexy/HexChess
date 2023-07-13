@@ -9,13 +9,18 @@ namespace HexChess {
 	};
 
 	struct Position {
-		int pieces[BoardLen];
+		Piece pieces[BoardLen];
 		BitBoard checkersbb;
 		BitBoard colorbb[ColorCount];
 
+		Square passing_square;
+
 		static Position Default();
 
-		bool Move(Square from, Square to);
+		bool ColorOf(Square, Color* out_color) const;
+
+		// returns true if move was made
+		bool DoMove(Square from, Square to);
 		MoveOptions PieceMoves(Square) const;
 	};
 }

@@ -139,7 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\HexChess\Moves.cpp" />
+    <ClCompile Include="src\HexChess\MoveGen.cpp" />
     <ClCompile Include="src\HexChess\Position.cpp" />
   </ItemGroup>
   <ItemGroup>

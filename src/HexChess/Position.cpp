@@ -61,3 +61,54 @@ Position Position::Default() {
 
 	return position;
 }
+
+bool Position::ColorOf(Square square, Color* out_color) const {
+	for (Color i = 0; i < ColorCount; i++) {
+		if (colorbb[i][square]) {
+			*out_color = i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Position::DoMove(Square from, Square to) {
+	if (from == to) {
+		return false;
+	}
+
+	Color from_color;
+	if (!ColorOf(from, &from_color)) {
+		return false;
+	}
+
+	bool is_attack = false;
+	MoveOptions move_options = PieceMoves(from);
+	if (move_options.attacks[to]) {
+		is_attack = true;
+	} else if (move_options.quites[to]) {
+	} else {
+		//return false; // comment out for dbg
+	}
+
+	// maybe eat piece
+	Color to_color;
+	if (ColorOf(to, &to_color)) {
+		colorbb[to_color][to] = 0;
+		checkersbb[to] = 0;
+		pieces[to] = None;
+	}
+
+	// place new piece
+	colorbb[from_color][to] = 1;
+	checkersbb[to] = 1;
+	pieces[to] = pieces[from];
+
+	// remove old piece
+	colorbb[from_color][from] = 0;
+	checkersbb[from] = 0;
+	pieces[from] = None;
+
+	return true;
+}

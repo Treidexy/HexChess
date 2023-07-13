@@ -38,7 +38,7 @@
     <ClCompile Include="src\HexChess\Position.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\HexChess\Moves.cpp">
+    <ClCompile Include="src\HexChess\MoveGen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -25,7 +25,8 @@ struct Game: public olc::PixelGameEngine {
 
 	olc::Decal* piece_decals[PieceCount * 2];
 
-	int sel_square;
+	Square sel_square;
+	Square curr_square;
 
 	Game() {
 		sAppName = "Hex Chess";
@@ -76,7 +77,13 @@ struct Game: public olc::PixelGameEngine {
 			rank = RankCounts[file] - 1;
 		}
 
-		sel_square = SquareAt(file, rank);
+		curr_square = SquareAt(file, rank);
+		if (GetMouse(0).bReleased) {
+			position.DoMove(sel_square, curr_square);
+		} else if (!GetMouse(0).bHeld) {
+			sel_square = curr_square;
+		}
+
 		MoveOptions move_options = position.PieceMoves(sel_square);
 		
 		for (File x = 0; x < FileCount; x++) {
@@ -97,7 +104,7 @@ struct Game: public olc::PixelGameEngine {
 					DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y) * tile_height}, piece_decals[PieceCount * int(position.colorbb[Black][square]) + int(piece)]);
 				}
 
-				if (move_options.quites[square]) {
+				if (move_options.quites[square] || move_options.attacks[square]) {
 					DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y)* tile_height}, stat_tile_decal);
 				}
 				if (square == sel_square) {

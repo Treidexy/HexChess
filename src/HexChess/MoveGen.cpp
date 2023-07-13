@@ -40,7 +40,7 @@ namespace {
 	}
 
 	BitBoard InDirection(BitBoard checkersbb, Direction dir, File x, Rank y) {
-		BitBoard bb;
+		BitBoard bb = BitBoard();
 		Square square;
 		while (SquareInDir(dir, x, y, &square)) {
 			bb.set(square);
@@ -57,7 +57,7 @@ namespace {
 	}
 
 	BitBoard RookEyes(BitBoard checkersbb, File x, Rank y) {
-		BitBoard bb;
+		BitBoard bb = BitBoard();
 		for (Direction i = 0; i < DirectionHalfCount; i++) {
 			bb |= InDirection(checkersbb, i, x, y);
 		}
@@ -66,7 +66,7 @@ namespace {
 	}
 
 	BitBoard BishopEyes(BitBoard checkersbb, File x, Rank y) {
-		BitBoard bb;
+		BitBoard bb = BitBoard();
 		for (Direction i = DirectionHalfCount; i < DirectionCount; i++) {
 			bb |= InDirection(checkersbb, i, x, y);
 		}
@@ -75,7 +75,7 @@ namespace {
 	}
 
 	BitBoard QueenEyes(BitBoard checkersbb, File x, Rank y) {
-		BitBoard bb;
+		BitBoard bb = BitBoard();
 		for (Direction i = 0; i < DirectionCount; i++) {
 			bb |= InDirection(checkersbb, i, x, y);
 		}
@@ -86,15 +86,53 @@ namespace {
 	MoveOptions FromBB(BitBoard enemy, BitBoard ally, BitBoard bb) {
 		return MoveOptions { .quites = bb & ~ally & ~enemy, .attacks = bb & ~ally & enemy };
 	}
+
+	MoveOptions PawnMoves(BitBoard enemy, BitBoard ally, Square square, Color color) {
+		MoveOptions move_options = {};
+
+		File file = FileOf(square);
+		Rank rank = RankOf(square);
+
+		Square to;
+
+		Direction eat_east;
+		Direction eat_west;
+		Direction forward;
+
+		if (color == White) {
+			eat_east = LatNorthEast;
+			eat_west = LatNorthWest;
+			forward = LatNorth;
+		} else if (color == Black) {
+			eat_east = LatSouthEast;
+			eat_west = LatSouthWest;
+			forward = LatSouth;
+		} else {
+			abort();
+		}
+
+		if (SquareInDir(eat_east, file, rank, &to)) {
+			move_options.attacks[to] = enemy[to];
+		}
+		if (SquareInDir(eat_west, file, rank, &to)) {
+			move_options.attacks[to] = enemy[to];
+		}
+
+		if (SquareInDir(forward, file, rank, &to) && !(enemy | ally)[to]) {
+			move_options.quites.set(to);
+
+			if (PawnBoosts[color][square] && SquareInDir(forward, FileOf(to), RankOf(to), &to) && !(enemy | ally)[to]) {
+				move_options.quites.set(to);
+			}
+		}
+
+		return move_options;
+	}
 }
 
 MoveOptions Position::PieceMoves(Square square) const {
 	Color color;
-	if (colorbb[White][square]) {
-		color = White;
-	} else if (colorbb[Black][square]) {
-		color = Black;
-	} else {
+	if (!ColorOf(square, &color)) {
 		return MoveOptions {};
 	}
 
@@ -116,6 +154,8 @@ MoveOptions Position::PieceMoves(Square square) const {
 		return FromBB(enemy, ally, BishopEyes(checkersbb, file, rank));
 	case Knight:
 		return FromBB(enemy, ally, KnightEyes(file, rank));
+	case Pawn:
+		return PawnMoves(enemy, ally, square, color);
 	}
 
 	return MoveOptions {};
