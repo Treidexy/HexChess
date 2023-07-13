@@ -4,12 +4,18 @@
 #include "HexChess/BitBoard.h"
 
 namespace HexChess {
+	struct MoveOptions {
+		BitBoard quites;
+		BitBoard attacks;
+	};
+
 	struct Position {
-		Piece pieces[BoardLen];
+		int pieces[BoardLen];
+		BitBoard checkersbb;
+		BitBoard colorbb[ColorCount];
 
 		static Position Default();
 
-		BitBoard PieceMoves(int square) const;
-		BitBoard PieceAttacks(int square) const;
+		MoveOptions PieceMoves(int square) const;
 	};
 }

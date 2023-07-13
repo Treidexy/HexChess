@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>inc;src</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,6 +121,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>inc;src</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +135,6 @@
     <ClInclude Include="inc\HexChess\Board.h" />
     <ClInclude Include="inc\HexChess\Directions.h" />
     <ClInclude Include="inc\HexChess\HexChess.h" />
-    <ClInclude Include="inc\HexChess\Moves.h" />
     <ClInclude Include="inc\olcPixelGameEngine.h" />
     <ClInclude Include="inc\HexChess\Position.h" />
   </ItemGroup>

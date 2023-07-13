@@ -30,7 +30,7 @@
     <ClInclude Include="inc\HexChess\BitBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\HexChess\Moves.h">
+    <ClInclude Include="inc\HexChess\Directions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,6 +89,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\w_rook.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sel_tile.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\stat_tile.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

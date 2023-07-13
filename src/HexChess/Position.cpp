@@ -2,29 +2,51 @@
 
 using namespace HexChess;
 
+namespace {
+	void SetPiece(Position* position, int file, int rank, int piece, int color) {
+		int square = SquareAt(file, rank);
+		position->pieces[square] = piece;
+		position->colorbb[color].set(square);
+		position->checkersbb.set(square);
+	}
+}
+
 Position Position::Default() {
 	Position position = {};
+	Position& p = position;
 
 	// pawns
-	position.pieces[SquareAt(1, 0)] = Piece::WPawn;
-	position.pieces[SquareAt(2, 1)] = Piece::WPawn;
-	position.pieces[SquareAt(3, 2)] = Piece::WPawn;
-	position.pieces[SquareAt(4, 3)] = Piece::WPawn;
-	position.pieces[SquareAt(5, 4)] = Piece::WPawn;
-	position.pieces[SquareAt(6, 3)] = Piece::WPawn;
-	position.pieces[SquareAt(7, 2)] = Piece::WPawn;
-	position.pieces[SquareAt(8, 1)] = Piece::WPawn;
-	position.pieces[SquareAt(9, 0)] = Piece::WPawn;
+	SetPiece(&p, 1, 0, Pawn, White);
+	SetPiece(&p, 2, 1, Pawn, White);
+	SetPiece(&p, 3, 2, Pawn, White);
+	SetPiece(&p, 4, 3, Pawn, White);
+	SetPiece(&p, 5, 4, Pawn, White);
+	SetPiece(&p, 6, 3, Pawn, White);
+	SetPiece(&p, 7, 2, Pawn, White);
+	SetPiece(&p, 8, 1, Pawn, White);
+	SetPiece(&p, 9, 0, Pawn, White);
 
-	position.pieces[SquareAt(1, 6)] = Piece::BPawn;
-	position.pieces[SquareAt(2, 6)] = Piece::BPawn;
-	position.pieces[SquareAt(3, 6)] = Piece::BPawn;
-	position.pieces[SquareAt(4, 6)] = Piece::BPawn;
-	position.pieces[SquareAt(5, 6)] = Piece::BPawn;
-	position.pieces[SquareAt(6, 6)] = Piece::BPawn;
-	position.pieces[SquareAt(7, 6)] = Piece::BPawn;
-	position.pieces[SquareAt(8, 6)] = Piece::BPawn;
-	position.pieces[SquareAt(9, 6)] = Piece::BPawn;
+	SetPiece(&p, 2, 0, Rook, White);
+	SetPiece(&p, 3, 0, Knight, White);
+	SetPiece(&p, 4, 0, Queen, White);
+	SetPiece(&p, 5, 0, Bishop, White);
+	SetPiece(&p, 5, 1, Bishop, White);
+	SetPiece(&p, 5, 2, Bishop, White);
+	SetPiece(&p, 6, 0, King, White);
+	SetPiece(&p, 7, 0, Knight, White);
+	SetPiece(&p, 8, 0, Rook, White);
+
+
+	SetPiece(&p, 1, 6, Pawn, Black);
+	SetPiece(&p, 2, 6, Pawn, Black);
+	SetPiece(&p, 3, 6, Pawn, Black);
+	SetPiece(&p, 4, 6, Pawn, Black);
+	SetPiece(&p, 5, 6, Pawn, Black);
+	SetPiece(&p, 6, 6, Pawn, Black);
+	SetPiece(&p, 7, 6, Pawn, Black);
+	SetPiece(&p, 8, 6, Pawn, Black);
+	SetPiece(&p, 9, 6, Pawn, Black);
+
 
 	return position;
 }

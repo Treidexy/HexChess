@@ -34,32 +34,20 @@ namespace HexChess {
 	static constexpr const int DirectionHalfCount = 6;
 	static constexpr const int DirectionCount = 12;
 
-	enum class Piece {
-		None,
-		WKing,
-		WQueen,
-		WRook,
-		WBishop,
-		WKnight,
-		WPawn,
 
-		BKing,
-		BQueen,
-		BRook,
-		BBishop,
-		BKnight,
-		BPawn,
-	};
+	static constexpr const int White = 0;
+	static constexpr const int Black = 1;
+	static constexpr const int ColorCount = 2;
 
-	enum class PieceKind {
-		None,
-		King,
-		Queen,
-		Rook,
-		Bishop,
-		Knight,
-		Pawn,
-	};
+	// None is included
+	static constexpr const int None = 0;
+	static constexpr const int King = 1;
+	static constexpr const int Queen = 2;
+	static constexpr const int Rook = 3;
+	static constexpr const int Bishop = 4;
+	static constexpr const int Knight = 5;
+	static constexpr const int Pawn = 6;
+	static constexpr const int PieceCount = 7;
 
 	inline constexpr bool InBounds(int file, int rank) {
 		return file >= 0 && file < FileCount && rank >= 0 && rank < RankCounts[file];
