@@ -3,7 +3,7 @@
 using namespace HexChess;
 
 namespace {
-	void SetPiece(Position* position, int file, int rank, int piece, int color) {
+	void SetPiece(Position* position, File file, Rank rank, Piece piece, Color color) {
 		int square = SquareAt(file, rank);
 		position->pieces[square] = piece;
 		position->colorbb[color].set(square);
@@ -46,6 +46,16 @@ Position Position::Default() {
 	SetPiece(&p, 7, 6, Pawn, Black);
 	SetPiece(&p, 8, 6, Pawn, Black);
 	SetPiece(&p, 9, 6, Pawn, Black);
+
+	SetPiece(&p, 2, 7, Rook, Black);
+	SetPiece(&p, 3, 8, Knight, Black);
+	SetPiece(&p, 4, 9, Queen, Black);
+	SetPiece(&p, 5, 10, Bishop, Black);
+	SetPiece(&p, 5, 9, Bishop, Black);
+	SetPiece(&p, 5, 8, Bishop, Black);
+	SetPiece(&p, 6, 9, King, Black);
+	SetPiece(&p, 7, 8, Knight, Black);
+	SetPiece(&p, 8, 7, Rook, Black);
 
 
 	return position;

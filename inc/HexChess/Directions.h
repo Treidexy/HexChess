@@ -4,36 +4,36 @@
 
 namespace HexChess {
 	template<int dir>
-	inline constexpr bool SquareInDir(int file, int rank, int* out_square);
+	inline constexpr bool SquareInDir(File, Rank, Square* out_square);
 
-	template<> inline constexpr bool SquareInDir<LatNorth>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<LatNorth>(File file, Rank rank, Square* out_square) {
 		return MaybeSquareAt(file, rank + 1, out_square);
 	}
-	template<> inline constexpr bool SquareInDir<LatNorthEast>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<LatNorthEast>(File file, Rank rank, Square* out_square) {
 		if (file >= 5) {
 			return MaybeSquareAt(file + 1, rank, out_square);
 		} else {
 			return MaybeSquareAt(file + 1, rank + 1, out_square);
 		}
 	}
-	template<> inline constexpr bool SquareInDir<LatSouthEast>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<LatSouthEast>(File file, Rank rank, Square* out_square) {
 		if (file >= 5) {
 			return MaybeSquareAt(file + 1, rank - 1, out_square);
 		} else {
 			return MaybeSquareAt(file + 1, rank, out_square);
 		}
 	}
-	template<> inline constexpr bool SquareInDir<LatSouth>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<LatSouth>(File file, Rank rank, Square* out_square) {
 		return MaybeSquareAt(file, rank - 1, out_square);
 	}
-	template<> inline constexpr bool SquareInDir<LatSouthWest>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<LatSouthWest>(File file, Rank rank, Square* out_square) {
 		if (file <= 5) {
 			return MaybeSquareAt(file - 1, rank - 1, out_square);
 		} else {
 			return MaybeSquareAt(file - 1, rank, out_square);
 		}
 	}
-	template<> inline constexpr bool SquareInDir<LatNorthWest>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<LatNorthWest>(File file, Rank rank, Square* out_square) {
 		if (file <= 5) {
 			return MaybeSquareAt(file - 1, rank, out_square);
 		} else {
@@ -41,14 +41,14 @@ namespace HexChess {
 		}
 	}
 
-	template<> inline constexpr bool SquareInDir<DiagNorthEast>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<DiagNorthEast>(File file, Rank rank, Square* out_square) {
 		if (file >= 5) {
 			return MaybeSquareAt(file + 1, rank + 1, out_square);
 		} else {
 			return MaybeSquareAt(file + 1, rank + 2, out_square);
 		}
 	}
-	template<> inline constexpr bool SquareInDir<DiagEast>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<DiagEast>(File file, Rank rank, Square* out_square) {
 		if (file >= 5) {
 			return MaybeSquareAt(file + 2, rank - 1, out_square);
 		} else if (file == 4) {
@@ -57,21 +57,21 @@ namespace HexChess {
 			return MaybeSquareAt(file + 2, rank + 1, out_square);
 		}
 	}
-	template<> inline constexpr bool SquareInDir<DiagSouthEast>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<DiagSouthEast>(File file, Rank rank, Square* out_square) {
 		if (file >= 5) {
 			return MaybeSquareAt(file + 1, rank - 2, out_square);
 		} else {
 			return MaybeSquareAt(file + 1, rank - 1, out_square);
 		}
 	}
-	template<> inline constexpr bool SquareInDir<DiagSouthWest>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<DiagSouthWest>(File file, Rank rank, Square* out_square) {
 		if (file <= 5) {
 			return MaybeSquareAt(file - 1, rank - 2, out_square);
 		} else {
 			return MaybeSquareAt(file - 1, rank - 1, out_square);
 		}
 	}
-	template<> inline constexpr bool SquareInDir<DiagWest>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<DiagWest>(File file, Rank rank, Square* out_square) {
 		if (file <= 5) {
 			return MaybeSquareAt(file - 2, rank - 1, out_square);
 		} else if (file == 6) {
@@ -80,7 +80,7 @@ namespace HexChess {
 			return MaybeSquareAt(file - 2, rank + 1, out_square);
 		}
 	}
-	template<> inline constexpr bool SquareInDir<DiagNorthWest>(int file, int rank, int* out_square) {
+	template<> inline constexpr bool SquareInDir<DiagNorthWest>(File file, Rank rank, Square* out_square) {
 		if (file <= 5) {
 			return MaybeSquareAt(file - 1, rank + 1, out_square);
 		} else {
@@ -88,7 +88,7 @@ namespace HexChess {
 		}
 	}
 
-	inline constexpr bool SquareInDir(int dir, int file, int rank, int* out_square) {
+	inline constexpr bool SquareInDir(int dir, File file, Rank rank, Square* out_square) {
 		switch (dir) {
 		case 0: return SquareInDir<0>(file, rank, out_square);
 		case 1: return SquareInDir<1>(file, rank, out_square);

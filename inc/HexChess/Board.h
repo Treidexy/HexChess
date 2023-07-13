@@ -4,6 +4,13 @@
 #include <bitset>
 
 namespace HexChess {
+	using Square = int;
+	using File = int;
+	using Rank = int;
+	using Direction = int;
+	using Color = int;
+	using Piece = int;
+
 	//static constexpr const int MiddleFile = 5;
 	static constexpr const int FileCount = 11;
 
@@ -17,57 +24,57 @@ namespace HexChess {
 
 
 
-	static constexpr const int LatNorth = 0;
-	static constexpr const int LatNorthEast = 1;
-	static constexpr const int LatSouthEast = 2;
-	static constexpr const int LatSouth = 3;
-	static constexpr const int LatSouthWest = 4;
-	static constexpr const int LatNorthWest = 5;
+	static constexpr const Direction LatNorth = 0;
+	static constexpr const Direction LatNorthEast = 1;
+	static constexpr const Direction LatSouthEast = 2;
+	static constexpr const Direction LatSouth = 3;
+	static constexpr const Direction LatSouthWest = 4;
+	static constexpr const Direction LatNorthWest = 5;
 
-	static constexpr const int DiagNorthEast = 6;
-	static constexpr const int DiagEast = 7;
-	static constexpr const int DiagSouthEast = 8;
-	static constexpr const int DiagSouthWest = 9;
-	static constexpr const int DiagWest = 10;
-	static constexpr const int DiagNorthWest = 11;
+	static constexpr const Direction DiagNorthEast = 6;
+	static constexpr const Direction DiagEast = 7;
+	static constexpr const Direction DiagSouthEast = 8;
+	static constexpr const Direction DiagSouthWest = 9;
+	static constexpr const Direction DiagWest = 10;
+	static constexpr const Direction DiagNorthWest = 11;
 
 	static constexpr const int DirectionHalfCount = 6;
 	static constexpr const int DirectionCount = 12;
 
 
-	static constexpr const int White = 0;
-	static constexpr const int Black = 1;
+	static constexpr const Color White = 0;
+	static constexpr const Color Black = 1;
 	static constexpr const int ColorCount = 2;
 
 	// None is included
-	static constexpr const int None = 0;
-	static constexpr const int King = 1;
-	static constexpr const int Queen = 2;
-	static constexpr const int Rook = 3;
-	static constexpr const int Bishop = 4;
-	static constexpr const int Knight = 5;
-	static constexpr const int Pawn = 6;
+	static constexpr const Piece None = 0;
+	static constexpr const Piece King = 1;
+	static constexpr const Piece Queen = 2;
+	static constexpr const Piece Rook = 3;
+	static constexpr const Piece Bishop = 4;
+	static constexpr const Piece Knight = 5;
+	static constexpr const Piece Pawn = 6;
 	static constexpr const int PieceCount = 7;
 
 	inline constexpr bool InBounds(int file, int rank) {
 		return file >= 0 && file < FileCount && rank >= 0 && rank < RankCounts[file];
 	}
 
-	inline constexpr int FileOf(int square) {
+	inline constexpr File FileOf(Square square) {
 		return square / RankMaxCount;
 	}
 
-	inline constexpr int RankOf(int square) {
+	inline constexpr Rank RankOf(Square square) {
 		return square % RankMaxCount;
 	}
 
-	inline constexpr int SquareAt(int file, int rank) {
+	inline constexpr Square SquareAt(File file, Rank rank) {
 		assert(InBounds(file, rank));
 
 		return file * RankMaxCount + rank;
 	}
 
-	inline constexpr bool MaybeSquareAt(int file, int rank, int* out_square) {
+	inline constexpr bool MaybeSquareAt(File file, Rank rank, Square* out_square) {
 		*out_square = file * RankMaxCount + rank;
 		return InBounds(file, rank);
 	}

@@ -16,6 +16,7 @@ namespace HexChess {
 
 		static Position Default();
 
-		MoveOptions PieceMoves(int square) const;
+		bool Move(Square from, Square to);
+		MoveOptions PieceMoves(Square) const;
 	};
 }

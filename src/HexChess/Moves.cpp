@@ -7,11 +7,11 @@
 using namespace HexChess;
 
 namespace {
-	BitBoard KingEyes(int x, int y) {
+	BitBoard KingEyes(File x, Rank y) {
 		BitBoard bb = BitBoard();
-		int eye_square;
+		Square eye_square;
 
-		for (int i = 0; i < DirectionCount; i++) {
+		for (Direction i = 0; i < DirectionCount; i++) {
 			if (SquareInDir(i, x, y, &eye_square)) {
 				bb.set(eye_square);
 			}
@@ -20,13 +20,13 @@ namespace {
 		return bb;
 	}
 
-	BitBoard KnightEyes(int x, int y) {
+	BitBoard KnightEyes(File x, Rank y) {
 		BitBoard bb = BitBoard();
-		int eye_square;
+		Square eye_square;
 
-		for (int i = 0; i < DirectionHalfCount; i++) {
+		for (Direction i = 0; i < DirectionHalfCount; i++) {
 			if (SquareInDir(i, x, y, &eye_square) && SquareInDir(i, FileOf(eye_square), RankOf(eye_square), &eye_square)) {
-				int p = eye_square;
+				Square p = eye_square;
 				if (SquareInDir(positive_modulo(i - 1, DirectionHalfCount), FileOf(p), RankOf(p), &eye_square)) {
 					bb.set(eye_square);
 				}
@@ -39,9 +39,9 @@ namespace {
 		return bb;
 	}
 
-	BitBoard InDirection(BitBoard checkersbb, int dir, int x, int y) {
+	BitBoard InDirection(BitBoard checkersbb, Direction dir, File x, Rank y) {
 		BitBoard bb;
-		int square;
+		Square square;
 		while (SquareInDir(dir, x, y, &square)) {
 			bb.set(square);
 
@@ -56,27 +56,27 @@ namespace {
 		return bb;
 	}
 
-	BitBoard RookEyes(BitBoard checkersbb, int x, int y) {
+	BitBoard RookEyes(BitBoard checkersbb, File x, Rank y) {
 		BitBoard bb;
-		for (int i = 0; i < DirectionHalfCount; i++) {
+		for (Direction i = 0; i < DirectionHalfCount; i++) {
 			bb |= InDirection(checkersbb, i, x, y);
 		}
 
 		return bb;
 	}
 
-	BitBoard BishopEyes(BitBoard checkersbb, int x, int y) {
+	BitBoard BishopEyes(BitBoard checkersbb, File x, Rank y) {
 		BitBoard bb;
-		for (int i = DirectionHalfCount; i < DirectionCount; i++) {
+		for (Direction i = DirectionHalfCount; i < DirectionCount; i++) {
 			bb |= InDirection(checkersbb, i, x, y);
 		}
 
 		return bb;
 	}
 
-	BitBoard QueenEyes(BitBoard checkersbb, int x, int y) {
+	BitBoard QueenEyes(BitBoard checkersbb, File x, Rank y) {
 		BitBoard bb;
-		for (int i = 0; i < DirectionCount; i++) {
+		for (Direction i = 0; i < DirectionCount; i++) {
 			bb |= InDirection(checkersbb, i, x, y);
 		}
 
@@ -88,8 +88,8 @@ namespace {
 	}
 }
 
-MoveOptions Position::PieceMoves(int square) const {
-	int color;
+MoveOptions Position::PieceMoves(Square square) const {
+	Color color;
 	if (colorbb[White][square]) {
 		color = White;
 	} else if (colorbb[Black][square]) {
@@ -100,10 +100,10 @@ MoveOptions Position::PieceMoves(int square) const {
 
 	BitBoard ally = colorbb[color];
 	BitBoard enemy = colorbb[!color];
-	int piece = pieces[square];
+	Piece piece = pieces[square];
 
-	int file = FileOf(square);
-	int rank = RankOf(square);
+	File file = FileOf(square);
+	Rank rank = RankOf(square);
 
 	switch (piece) {
 	case King:
