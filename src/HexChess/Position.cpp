@@ -92,6 +92,7 @@ bool Position::DoMove(Square from, Square to) {
 		//return false; // comment out for dbg
 	}
 
+
 	// maybe eat piece
 	Color to_color;
 	if (ColorOf(to, &to_color)) {

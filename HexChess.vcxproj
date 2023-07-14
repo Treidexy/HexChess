@@ -154,6 +154,7 @@
     <Image Include="res\tile0.png" />
     <Image Include="res\tile1.png" />
     <Image Include="res\tile2.png" />
+    <Image Include="res\whiteboard.png" />
     <Image Include="res\w_bishop.png" />
     <Image Include="res\w_king.png" />
     <Image Include="res\w_knight.png" />
