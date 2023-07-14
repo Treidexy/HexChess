@@ -14,6 +14,7 @@ namespace HexChess {
 		BitBoard colorbb[ColorCount];
 
 		Square passing_square;
+		Square last_move;
 
 		static Position Default();
 

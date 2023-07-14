@@ -4,7 +4,7 @@
 #include <bitset>
 
 namespace HexChess {
-	using Square = int;
+	using Square = int; // -1 used as None
 	using File = int;
 	using Rank = int;
 	using Direction = int;

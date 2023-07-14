@@ -87,7 +87,7 @@ namespace {
 		return MoveOptions { .quites = bb & ~ally & ~enemy, .attacks = bb & ~ally & enemy };
 	}
 
-	MoveOptions PawnMoves(BitBoard enemy, BitBoard ally, Square square, Color color) {
+	MoveOptions PawnMoves(BitBoard enemy, BitBoard ally, Square square, Color color, Square passing_square) {
 		MoveOptions move_options = {};
 
 		File file = FileOf(square);
@@ -112,10 +112,10 @@ namespace {
 		}
 
 		if (SquareInDir(eat_east, file, rank, &to)) {
-			move_options.attacks[to] = enemy[to];
+			move_options.attacks[to] = enemy[to] || passing_square == to;
 		}
 		if (SquareInDir(eat_west, file, rank, &to)) {
-			move_options.attacks[to] = enemy[to];
+			move_options.attacks[to] = enemy[to] || passing_square == to;
 		}
 
 		if (SquareInDir(forward, file, rank, &to) && !(enemy | ally)[to]) {
@@ -155,7 +155,7 @@ MoveOptions Position::PieceMoves(Square square) const {
 	case Knight:
 		return FromBB(enemy, ally, KnightEyes(file, rank));
 	case Pawn:
-		return PawnMoves(enemy, ally, square, color);
+		return PawnMoves(enemy, ally, square, color, passing_square);
 	}
 
 	return MoveOptions {};

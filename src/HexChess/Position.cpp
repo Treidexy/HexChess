@@ -92,11 +92,33 @@ bool Position::DoMove(Square from, Square to) {
 		//return false; // comment out for dbg
 	}
 
+	Color eat_color;
+
+	if (pieces[from] == Pawn) {
+		if (to == passing_square) {
+			assert(is_attack);
+			assert(ColorOf(last_move, &eat_color));
+
+			// eat piece
+			colorbb[eat_color][last_move] = 0;
+			checkersbb[last_move] = 0;
+			pieces[last_move] = None;
+		}
+
+		if (RankOf(from) - RankOf(to) == 2) {
+			passing_square = SquareAt(FileOf(to), RankOf(to) + 1);
+		} else if (RankOf(to) - RankOf(from) == 2) {
+			passing_square = SquareAt(FileOf(to), RankOf(to) - 1);
+		} else {
+			passing_square = -1;
+		}
+	} else {
+		passing_square = -1;
+	}
 
 	// maybe eat piece
-	Color to_color;
-	if (ColorOf(to, &to_color)) {
-		colorbb[to_color][to] = 0;
+	if (ColorOf(to, &eat_color)) {
+		colorbb[eat_color][to] = 0;
 		checkersbb[to] = 0;
 		pieces[to] = None;
 	}
@@ -110,6 +132,8 @@ bool Position::DoMove(Square from, Square to) {
 	colorbb[from_color][from] = 0;
 	checkersbb[from] = 0;
 	pieces[from] = None;
+
+	last_move = to;
 
 	return true;
 }
