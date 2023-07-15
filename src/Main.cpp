@@ -15,6 +15,7 @@ struct Game: public olc::PixelGameEngine {
 	olc::Decal* tile_decals[3];
 	olc::Decal* sel_tile_decal;
 	olc::Decal* stat_tile_decal;
+	olc::Decal* dbg_tile_decal;
 
 	static const constexpr int tile_colors[FileCount] = {
 		0, 1, 2, 0, 1, 2, 1, 0, 2, 1, 0
@@ -42,6 +43,7 @@ struct Game: public olc::PixelGameEngine {
 
 		sel_tile_decal = new olc::Decal(new olc::Sprite("res/sel_tile.png"));
 		stat_tile_decal = new olc::Decal(new olc::Sprite("res/stat_tile.png"));
+		dbg_tile_decal = new olc::Decal(new olc::Sprite("res/dbg_tile.png"));
 
 		piece_decals[King] = new olc::Decal(new olc::Sprite("res/w_king.png"));
 		piece_decals[Queen] = new olc::Decal(new olc::Sprite("res/w_queen.png"));

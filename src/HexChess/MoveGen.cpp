@@ -6,6 +6,7 @@
 
 using namespace HexChess;
 
+// MAYBE: maybe move to separate file
 namespace {
 	BitBoard KingEyes(File x, Rank y) {
 		BitBoard bb = BitBoard();
@@ -87,14 +88,7 @@ namespace {
 		return MoveOptions { .quites = bb & ~ally & ~enemy, .attacks = bb & ~ally & enemy };
 	}
 
-	MoveOptions PawnMoves(BitBoard enemy, BitBoard ally, Square square, Color color, Square passing_square) {
-		MoveOptions move_options = {};
-
-		File file = FileOf(square);
-		Rank rank = RankOf(square);
-
-		Square to;
-
+	BitBoard PawnEyes(File file, Rank rank, Color color) {
 		Direction eat_east;
 		Direction eat_west;
 		Direction forward;
@@ -111,12 +105,37 @@ namespace {
 			abort();
 		}
 
+		Square to;
+		BitBoard out = BitBoard();
+
 		if (SquareInDir(eat_east, file, rank, &to)) {
-			move_options.attacks[to] = enemy[to] || passing_square == to;
+			out[to] = 1;
 		}
 		if (SquareInDir(eat_west, file, rank, &to)) {
-			move_options.attacks[to] = enemy[to] || passing_square == to;
+			out[to] = 1;
 		}
+
+		return out;
+	}
+
+	MoveOptions PawnMoves(BitBoard enemy, BitBoard ally, Square square, Color color, Square passing_square) {
+		MoveOptions move_options = {};
+
+		File file = FileOf(square);
+		Rank rank = RankOf(square);
+
+		Square to;
+
+		Direction forward;
+		if (color == White) {
+			forward = LatNorth;
+		} else if (color == Black) {
+			forward = LatSouth;
+		} else {
+			abort();
+		}
+
+		move_options.attacks |= PawnEyes(file, rank, color);
 
 		if (SquareInDir(forward, file, rank, &to) && !(enemy | ally)[to]) {
 			move_options.quites.set(to);
@@ -143,20 +162,141 @@ MoveOptions Position::PieceMoves(Square square) const {
 	File file = FileOf(square);
 	Rank rank = RankOf(square);
 
-	switch (piece) {
-	case King:
-		return FromBB(enemy, ally, KingEyes(file, rank));
-	case Queen:
-		return FromBB(enemy, ally, QueenEyes(checkersbb, file, rank));
-	case Rook:
-		return FromBB(enemy, ally, RookEyes(checkersbb, file, rank));
-	case Bishop:
-		return FromBB(enemy, ally, BishopEyes(checkersbb, file, rank));
-	case Knight:
-		return FromBB(enemy, ally, KnightEyes(file, rank));
-	case Pawn:
-		return PawnMoves(enemy, ally, square, color, passing_square);
+	if (piece == King) {
+		return FromBB(enemy, ally, KingEyes(file, rank) & ~eyesbb[!color]);
 	}
 
-	return MoveOptions {};
+	if (royalties[color].in_double_check) {
+		return MoveOptions {};
+	}
+
+	MoveOptions move_options;
+
+	switch (piece) {
+	case Queen:
+		move_options = FromBB(enemy, ally, QueenEyes(checkersbb, file, rank));
+		break;
+	case Rook:
+		move_options = FromBB(enemy, ally, RookEyes(checkersbb, file, rank));
+		break;
+	case Bishop:
+		move_options = FromBB(enemy, ally, BishopEyes(checkersbb, file, rank));
+		break;
+	case Knight:
+		move_options = FromBB(enemy, ally, KnightEyes(file, rank));
+		break;
+	case Pawn:
+		move_options = PawnMoves(enemy, ally, square, color, passing_square);
+		break;
+
+	default:
+		return MoveOptions {};
+	}
+
+	if (royalties[color].check_ray.any()) {
+		move_options.quites &= royalties[color].check_ray;
+		move_options.attacks &= royalties[color].check_ray;
+	}
+
+	for (Direction i = 0; i < DirectionCount; i++) {
+		if (royalties[color].pin_rays[i][square]) {
+			move_options.quites &= royalties[color].pin_rays[i];
+			move_options.attacks &= royalties[color].pin_rays[i];
+		}
+	}
+
+	return move_options;
+}
+
+void Position::CalcEyes(Color color) {
+	BitBoard& eyes = eyesbb[color];
+	eyes.reset();
+
+	BitBoard it = colorbb[color];
+	while (it.any()) {
+		Square square = PopWeak(&it);
+
+		BitBoard ally = colorbb[color];
+		BitBoard enemy = colorbb[!color];
+		Piece piece = pieces[square];
+
+		File file = FileOf(square);
+		Rank rank = RankOf(square);
+
+		switch (piece) {
+		case King:
+			eyes |= KingEyes(file, rank);
+			break;
+		case Queen:
+			eyes |= QueenEyes(checkersbb, file, rank);
+			break;
+		case Rook:
+			eyes |= RookEyes(checkersbb, file, rank);
+			break;
+		case Bishop:
+			eyes |= BishopEyes(checkersbb, file, rank);
+			break;
+		case Knight:
+			eyes |= KnightEyes(file, rank);
+			break;
+		case Pawn:
+			eyes |= PawnEyes(file, rank, color);
+			break;
+		}
+	}
+}
+
+void Position::CalcRoyaltySafety(Color color) {
+	int check_count = 0;
+
+	const Square square = royalties[color].square;
+	const File file = FileOf(square);
+	const Rank rank = RankOf(square);
+	
+	const BitBoard ally = colorbb[color];
+	const BitBoard enemy = colorbb[!color];
+
+	BitBoard &check_ray = royalties[color].check_ray;
+	BitBoard (&pin_rays)[DirectionCount] = royalties[color].pin_rays;
+
+	// knights
+	BitBoard knight_potential_attackers = KnightEyes(file, rank) & enemy;
+	while (knight_potential_attackers.any()) {
+		Square knight_square = PopWeak(&knight_potential_attackers);
+		if (pieces[knight_square] == Knight) {
+			check_ray = BitBoard().set(knight_square);
+			check_count++;
+		}
+	}
+
+	// sliding
+	for (Direction i = 0; i < DirectionCount; i++) {
+		BitBoard ray = InDirection(enemy, i, file, rank);
+		if ((ray & enemy).none()) {
+			continue;
+		}
+		if (!PieceCanSlideInDir(pieces[WeakBit(ray & enemy)], i)) {
+			continue;
+		}
+
+		BitBoard pinned = ray & ally;
+		if (pinned.count() == 0) {
+			check_ray = ray;
+			check_count++;
+		} else if (pinned.count() == 1) {
+			pin_rays[i] = check_ray;
+		}
+	}
+	
+	// pawns
+	BitBoard pawn_potential_attackers = PawnEyes(file, rank, !color) & enemy;
+	while (pawn_potential_attackers.any()) {
+		Square pawn_square = PopWeak(&pawn_potential_attackers);
+		if (pieces[pawn_square] == Pawn) {
+			check_ray = BitBoard().set(pawn_square);
+			check_count++;
+		}
+	}
+
+	royalties[color].in_double_check = check_count > 1;
 }

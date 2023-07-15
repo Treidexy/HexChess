@@ -10,6 +10,10 @@ namespace {
 		position->pieces[square] = piece;
 		position->colorbb[color].set(square);
 		position->checkersbb.set(square);
+
+		if (piece == King) {
+			position->royalties[color].square = square;
+		}
 	}
 }
 
@@ -59,6 +63,14 @@ Position Position::Default() {
 	SetPiece(&p, 7, 8, Knight, Black);
 	SetPiece(&p, 8, 7, Rook, Black);
 
+	p.CalcEyes(White);
+	p.CalcEyes(Black);
+
+	p.CalcRoyaltySafety(White);
+	p.CalcRoyaltySafety(Black);
+
+	p.opp = White;
+
 	return position;
 }
 
@@ -83,18 +95,24 @@ bool Position::DoMove(Square from, Square to) {
 		return false;
 	}
 
+	if (from_color != opp) {
+		return false; // comment out for dbg
+	}
+
+	Piece from_piece = pieces[from];
+
 	bool is_attack = false;
 	MoveOptions move_options = PieceMoves(from);
 	if (move_options.attacks[to]) {
 		is_attack = true;
 	} else if (move_options.quites[to]) {
 	} else {
-		//return false; // comment out for dbg
+		return false; // comment out for dbg
 	}
 
 	Color eat_color;
 
-	if (pieces[from] == Pawn) {
+	if (from_piece == Pawn) {
 		if (to == passing_square) {
 			assert(is_attack);
 			assert(ColorOf(last_move, &eat_color));
@@ -134,6 +152,18 @@ bool Position::DoMove(Square from, Square to) {
 	pieces[from] = None;
 
 	last_move = to;
+
+	if (from_piece == King) {
+		royalties[from_color].square = to;
+	}
+
+	CalcEyes(White);
+	CalcEyes(Black);
+
+	CalcRoyaltySafety(White);
+	CalcRoyaltySafety(Black);
+
+	opp = !opp;
 
 	return true;
 }
