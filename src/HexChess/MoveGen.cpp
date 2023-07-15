@@ -135,7 +135,12 @@ namespace {
 			abort();
 		}
 
-		move_options.attacks |= PawnEyes(file, rank, color);
+		BitBoard passing_square_bb = BitBoard();
+		if (passing_square != -1) {
+			passing_square_bb[passing_square] = 1;
+		}
+
+		move_options.attacks |= PawnEyes(file, rank, color) & (enemy | passing_square_bb);
 
 		if (SquareInDir(forward, file, rank, &to) && !(enemy | ally)[to]) {
 			move_options.quites.set(to);
@@ -258,6 +263,7 @@ void Position::CalcRoyaltySafety(Color color) {
 
 	BitBoard &check_ray = royalties[color].check_ray;
 	BitBoard (&pin_rays)[DirectionCount] = royalties[color].pin_rays;
+	check_ray.reset();
 
 	// knights
 	BitBoard knight_potential_attackers = KnightEyes(file, rank) & enemy;
@@ -273,9 +279,11 @@ void Position::CalcRoyaltySafety(Color color) {
 	for (Direction i = 0; i < DirectionCount; i++) {
 		BitBoard ray = InDirection(enemy, i, file, rank);
 		if ((ray & enemy).none()) {
+			pin_rays[i].reset();
 			continue;
 		}
 		if (!PieceCanSlideInDir(pieces[WeakBit(ray & enemy)], i)) {
+			pin_rays[i].reset();
 			continue;
 		}
 

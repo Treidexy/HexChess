@@ -3,6 +3,8 @@
 
 #include "HexChess/HexChess.h"
 
+#include "FishBot/Zero.h"
+
 #include <bitset>
 
 using namespace HexChess;
@@ -65,6 +67,10 @@ struct Game: public olc::PixelGameEngine {
 	bool OnUserUpdate(float fElapsedTime) override {
 		Clear(olc::PixelF(0.25f, 0.25f, 0.25f));
 
+		if (GetKey(olc::SPACE).bPressed) {
+			FishBot::Zero::MakeMove(&position);
+		}
+		
 		File file = int(GetMouseX() / (0.75f * tile_width) - 0.25f * 0.75f);
 		if (file < 0) {
 			file = 0;
@@ -101,6 +107,10 @@ struct Game: public olc::PixelGameEngine {
 				Rank draw_y = RankCounts[x] - y - 1;
 				Piece piece = position.pieces[SquareAt(x, y)];
 				Square square = SquareAt(x, y);
+
+				if (GetKey(olc::D).bHeld && position.royalties[position.opp].check_ray[square]) {
+					DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y)* tile_height}, dbg_tile_decal);
+				}
 
 				if (piece != None) {
 					DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y) * tile_height}, piece_decals[PieceCount * int(position.colorbb[Black][square]) + int(piece)]);

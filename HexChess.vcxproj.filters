@@ -44,6 +44,12 @@
     <ClCompile Include="src\HexChess\MoveGen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="inc\FishBot\Zero.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FishBot\Zero.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\tile0.png">
