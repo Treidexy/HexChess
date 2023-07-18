@@ -85,7 +85,7 @@ bool Position::ColorOf(Square square, Color* out_color) const {
 	return false;
 }
 
-bool Position::DoMove(Square from, Square to) {
+bool Position::DoMove(Square from, Square to, Piece promotion) {
 	if (from == to) {
 		return false;
 	}
@@ -144,7 +144,11 @@ bool Position::DoMove(Square from, Square to) {
 	// place new piece
 	colorbb[from_color][to] = 1;
 	checkersbb[to] = 1;
-	pieces[to] = pieces[from];
+	if (from_piece == Pawn && RankOf(to) == 0 || RankOf(to) == RankCounts[FileOf(from)]) {
+		pieces[to] = promotion;
+	} else {
+		pieces[to] = pieces[from];
+	}
 
 	// remove old piece
 	colorbb[from_color][from] = 0;

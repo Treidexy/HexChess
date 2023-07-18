@@ -36,7 +36,7 @@ bool Zero::MakeMove(Position* position) {
 		}
 
 		Square to = WeakBit(it);
-		return position->DoMove(from, to);
+		return position->DoMove(from, to, Queen);
 	}
 
 	return false;

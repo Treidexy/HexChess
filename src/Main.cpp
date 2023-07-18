@@ -31,6 +31,8 @@ struct Game: public olc::PixelGameEngine {
 	Square sel_square;
 	Square curr_square;
 
+	Piece promotion = Queen;
+
 	Game() {
 		sAppName = "Hex Chess";
 	}
@@ -70,6 +72,20 @@ struct Game: public olc::PixelGameEngine {
 		if (GetKey(olc::SPACE).bPressed) {
 			FishBot::Zero::MakeMove(&position);
 		}
+
+		if (GetKey(olc::Q).bPressed || GetKey(olc::K1).bPressed) {
+			promotion = Queen;
+		} else if (GetKey(olc::R).bPressed || GetKey(olc::K2).bPressed) {
+			promotion = Rook;
+		} else if (GetKey(olc::B).bPressed || GetKey(olc::K3).bPressed) {
+			promotion = Bishop;
+		} else if (GetKey(olc::N).bPressed || GetKey(olc::K4).bPressed) {
+			promotion = Knight;
+		} else if (GetKey(olc::P).bPressed || GetKey(olc::K5).bPressed) {
+			promotion = Pawn;
+		} else if (GetKey(olc::Z).bPressed || GetKey(olc::K0).bPressed) {
+			promotion = None;
+		}
 		
 		File file = int(GetMouseX() / (0.75f * tile_width) - 0.25f * 0.75f);
 		if (file < 0) {
@@ -87,7 +103,7 @@ struct Game: public olc::PixelGameEngine {
 
 		curr_square = SquareAt(file, rank);
 		if (GetMouse(0).bReleased) {
-			position.DoMove(sel_square, curr_square);
+			position.DoMove(sel_square, curr_square, promotion);
 		} else if (!GetMouse(0).bHeld) {
 			sel_square = curr_square;
 		}
@@ -129,6 +145,12 @@ struct Game: public olc::PixelGameEngine {
 
 		if (GetMouse(0).bHeld && position.checkersbb[sel_square]) {
 			DrawDecal(olc::vf2d {GetMouseX() - 0.5f * tile_width, GetMouseY() - 0.5f * tile_height}, piece_decals[PieceCount * int(position.colorbb[Black][sel_square]) + int(position.pieces[sel_square])]);
+		}
+
+
+		// TODO: fix promotion interface
+		if (promotion != None) {
+			DrawDecal(olc::vf2d {10.0f, 10.0f}, piece_decals[int(promotion)]);
 		}
 
 		return true;

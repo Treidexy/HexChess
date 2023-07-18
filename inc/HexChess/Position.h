@@ -35,7 +35,7 @@ namespace HexChess {
 		bool ColorOf(Square, Color* out_color) const;
 
 		// returns true if move was made
-		bool DoMove(Square from, Square to);
+		bool DoMove(Square from, Square to, Piece promotion);
 		MoveOptions PieceMoves(Square) const;
 
 		void CalcRoyaltySafety(Color); // might change name later
