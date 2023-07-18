@@ -144,7 +144,7 @@ bool Position::DoMove(Square from, Square to, Piece promotion) {
 	// place new piece
 	colorbb[from_color][to] = 1;
 	checkersbb[to] = 1;
-	if (from_piece == Pawn && RankOf(to) == 0 || RankOf(to) == RankCounts[FileOf(from)]) {
+	if (from_piece == Pawn && (RankOf(to) == 0 || RankOf(to) == RankCounts[FileOf(from)] - 1)) {
 		pieces[to] = promotion;
 	} else {
 		pieces[to] = pieces[from];

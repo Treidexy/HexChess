@@ -150,7 +150,7 @@ struct Game: public olc::PixelGameEngine {
 
 		// TODO: fix promotion interface
 		if (promotion != None) {
-			DrawDecal(olc::vf2d {10.0f, 10.0f}, piece_decals[int(promotion)]);
+			DrawDecal(olc::vf2d {10.0f, 10.0f}, piece_decals[int(promotion)], { 0.5f, 0.5f });
 		}
 
 		return true;
