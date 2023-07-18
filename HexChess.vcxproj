@@ -152,6 +152,7 @@
     <Image Include="res\b_pawn.png" />
     <Image Include="res\b_queen.png" />
     <Image Include="res\b_rook.png" />
+    <Image Include="res\dbg_tile.png" />
     <Image Include="res\sel_tile.png" />
     <Image Include="res\stat_tile.png" />
     <Image Include="res\tile0.png" />

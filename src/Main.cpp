@@ -113,7 +113,9 @@ struct Game: public olc::PixelGameEngine {
 				}
 
 				if (piece != None) {
-					DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y) * tile_height}, piece_decals[PieceCount * int(position.colorbb[Black][square]) + int(piece)]);
+					if (!GetMouse(0).bHeld || square != sel_square) {
+						DrawDecal(olc::vf2d {x * 0.75f * tile_width, (tile_yoffs[x] + draw_y)* tile_height}, piece_decals[PieceCount * int(position.colorbb[Black][square]) + int(piece)]);
+					}
 				}
 
 				if (move_options.quites[square] || move_options.attacks[square]) {
@@ -124,6 +126,11 @@ struct Game: public olc::PixelGameEngine {
 				}
 			}
 		}
+
+		if (GetMouse(0).bHeld && position.checkersbb[sel_square]) {
+			DrawDecal(olc::vf2d {GetMouseX() - 0.5f * tile_width, GetMouseY() - 0.5f * tile_height}, piece_decals[PieceCount * int(position.colorbb[Black][sel_square]) + int(position.pieces[sel_square])]);
+		}
+
 		return true;
 	}
 };

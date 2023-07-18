@@ -106,5 +106,8 @@
     <Image Include="res\whiteboard.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\dbg_tile.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
